@@ -1,8 +1,8 @@
 ## 给fork配置远程库  
 使用  
-```
-git remote -v
-```
+
+`git remote -v`
+
 > 查看远程状态
 确定一个将被同步给 fork 远程的上游仓库 
 ```
