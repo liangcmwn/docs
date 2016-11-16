@@ -1,10 +1,10 @@
-## Name
-必须字段。  
+## Name 
+package name 必须字段。  
 小提示：
 >不要在name中包含js, node字样；
 这个名字最终会是URL的一部分，命令行的参数，目录名，所以不能以点号或下划线开头；
 这个名字可能在require()方法中被调用，所以应该尽可能短；
-Version
+## Version
 必须字段。
 
 ## Description
