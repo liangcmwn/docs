@@ -11,8 +11,7 @@ npm 允许在 package.json 文件里面，使用 scripts 字段定义脚本命�
 ```
 上面代码是 `package.json` 文件的一个片段，里面的 `scripts` 字段是一个对象。它的每一个属性，对应一段脚本。比如， build 命令对应的脚本是 ```node build.js``` 。
 
-命令行下使用 `npm run` 命令，就可以执行这段脚本。
-
+命令行下使用 `npm run` 命令，就可以执行这段脚本。  
 `$ npm run build`  
 等同于执行  
 `$ node build.js`
@@ -30,22 +29,19 @@ npm 脚本的原理非常简单。每当执行 npm run ，就会自动新建一�
 
 比较特别的是， npm run 新建的这个 Shell，会将当前目录的 node_modules/.bin 子目录加入 PATH 变量，执行结束后，再将 PATH 变量恢复原样。
 
-这意味着，当前目录的 node_modules/.bin 子目录里面的所有脚本，都可以直接用脚本名调用，而不必加上路径。比如，当前项目的依赖里面有 Mocha，只要直接写 mocha test 就可以了。
-
-"test": "mocha test"
-而不用写成下面这样。
-
-"test": "./node_modules/.bin/mocha test"
+这意味着，当前目录的 node_modules/.bin 子目录里面的所有脚本，都可以直接用脚本名调用，而不必加上路径。比如，当前项目的依赖里面有 Mocha，只要直接写 mocha test 就可以了。  
+`"test": "mocha test"`
+而不用写成下面这样。  
+`"test": "./node_modules/.bin/mocha test"`
 由于 npm 脚本的唯一要求就是可以在 Shell 执行，因此它不一定是 Node 脚本，任何可执行文件都可以写在里面。
 
 npm 脚本的退出码，也遵守 Shell 脚本规则。如果退出码不是 0 ，npm 就认为这个脚本执行失败。
 
 # 三、通配符
 
-由于 npm 脚本就是 Shell 脚本，因为可以使用 Shell 通配符。
-
-"lint": "jshint *.js"
-"lint": "jshint **/*.js"
+由于 npm 脚本就是 Shell 脚本，因为可以使用 Shell 通配符。  
+`"lint": "jshint *.js"`  
+`"lint": "jshint **/*.js"`  
 上面代码中， * 表示任意文件名， ** 表示任意一层子目录。
 
 如果要将通配符传入原始命令，防止被 Shell 转义，要将星号转义。
