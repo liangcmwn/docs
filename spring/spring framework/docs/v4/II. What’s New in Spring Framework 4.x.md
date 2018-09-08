@@ -271,61 +271,120 @@ Spring 4.1 also has a breaking change in the Cache interface as a new putIfAbsen
 ## 4.3 Web改进
 4.3 Web Improvements
 
+* 新的抽象ResourceResolver, ResourceTransformer和ResourceUrlProvider扩展了已存在的基于ResourceHttpRequestHandler的资源处理程序。一些内置的实现提供了对带版本的资源URL（为了有效的HTTP缓存）、定位gzip资源、生成HTML 5 AppCache清单等的支持。参考21.16.9 资源服务。  
 The existing support for resource handling based on the ResourceHttpRequestHandler has been expanded with new abstractions ResourceResolver, ResourceTransformer, and ResourceUrlProvider. A number of built-in implementations provide support for versioned resource URLs (for effective HTTP caching), locating gzipped resources, generating an HTML 5 AppCache manifests, and more. See Section 16.16.7, “资源服务”.
+
+* JDK 1.8的java.util.Optional现在支持@RequestParam, @RequestHeader和@MatrixVariable控制器方法的参数。  
 JDK 1.8’s java.util.Optional is now supported for @RequestParam, @RequestHeader, and @MatrixVariable controller method arguments.
+* ListenableFuture作为返回值替代了DeferredResult，在这方面一项基础服务（或者说对AsyncRestTemplate的调用）已经返回了ListenableFuture。  
 ListenableFuture is supported as a return value alternative to DeferredResult where an underlying service (or perhaps a call to AsyncRestTemplate) already returns ListenableFuture.
+* @ModelAttribute方法现在按照依赖间的顺序依次被调用。
 @ModelAttribute methods are now invoked in an order that respects inter-dependencies. See SPR-6299.
+* Jackson的@JsonView直接作用于@ResponseBody和ResponseEntity控制器方法，用于序列化同一个POJO的不同形式（比如，汇总和详情）。这可以通过为模型属性添加指定key的序列化视图类型来渲染视图。参考Jackson序列化视图支持。
 Jackson’s @JsonView is supported directly on @ResponseBody and ResponseEntity controller methods for serializing different amounts of detail for the same POJO (e.g. summary vs. detail page). This is also supported with View-based rendering by adding the serialization view type as a model attribute under a special key. See the section called “支持 Jackson 序列化视图” for details.
+
+* Jackson现在支持JSONP。参考Jackson JSONP支持。
 JSONP is now supported with Jackson. See the section called “支持 Jackson JSONP”.
+
+* 新的生命周期选项可用于在控制器方法返回后且响应写出前拦截@ResponseBody和ResponseEntity方法，声明一个@ControllerAdvice bean实现ResponseBodyAdvice即可，内置的@JsonView和JSONP恰恰利用了这点。参考21.4.1 使用HandlerInterceptor拦截请求。
+
 A new lifecycle option is available for intercepting @ResponseBody and ResponseEntity methods just after the controller method returns and before the response is written. To take advantage declare an @ControllerAdvice bean that implements ResponseBodyAdvice. The built-in support for @JsonView and JSONP take advantage of this. See Section 16.4.1, “使用 HandlerInterceptor 拦截请求”.
+
+* 有三个HttpMessageConverter选项：   
 There are three new HttpMessageConverter options:
+  * Gson——比Jackson更轻的足迹，已用于Spring Android中。   
+  Gson — lighter footprint than Jackson; has already been in use in Spring Android.
 
-Gson — lighter footprint than Jackson; has already been in use in Spring Android.
+  * Google协议缓冲——企业内部有效的服务间通信数据协议，但是也可以作为JSON和XML暴露于浏览器中。
 Google Protocol Buffers — efficient and effective as an inter-service communication data protocol within an enterprise but can also be exposed as JSON and XML for browsers.
+
+  * 通过jackson-dataformat-xml扩展支持基于XML的Jackson。当使用@EnableWebMvc或<mvc:annotation-driven>时，如果classpath下存在jackson-dataformat-xml则默认会替代JAXB2。
 Jackson based XML serialization is now supported through the jackson-dataformat-xml extension. When using @EnableWebMvc or <mvc:annotation-driven/>, this is used by default instead of JAXB2 if jackson-dataformat-xml is in the classpath.
+
+* 类似JSP的视图现在可以通过引用控制器映射的名称与控制器建立链接。默认的名称将被赋给每一个@RequestMapping。例如，FooController拥有方法handleFoo，它的名称为“FC#handleFoo”。命名策略是可插拔的，也可以通过name属性为@RequestMapping明确地命名。在Spring JSP标签库中新的mvcUrl功能可以让使用JSP页面变得更方便。参考21.7.2 从视图为Controller及其方法创建URI。
+
 Views such as JSPs can now build links to controllers by referring to controller mappings by name. A default name is assigned to every @RequestMapping. For example FooController with method handleFoo is named "FC#handleFoo". The naming strategy is pluggable. It is also possible to name an @RequestMapping explicitly through its name attribute. A new mvcUrl function in the Spring JSP tag library makes this easy to use in JSP pages. See Section 16.7.2, “Building URIs to Controllers and methods from views”.
+
+* ResponseEntity提供了创建者风格的API用于引导控制器方法为服务端响应做准备。例如，ResponseEntity.ok()。
+
 ResponseEntity provides a builder-style API to guide controller methods towards the preparation of server-side responses, e.g. ResponseEntity.ok().
+
+* RequestEntity是一种新类型，它提供了创建者风格的API用于引导客户端REST代码为HTTP请求做准备。
 RequestEntity is a new type that provides a builder-style API to guide client-side REST code towards the preparation of HTTP requests.
+
+* MVC Java配置与XML命名空间： 
 MVC Java config and XML namespace:
-
+  * 视图解析器可以被配置，包含对内容协商的支持。参考21.16.8 视图解析器。
 View resolvers can now be configured including support for content negotiation, see Section 16.16.6, “视图解析器”.
+  * 视图控制器内置了对重定向及设置响应状态的支持。应用程序可以使用它配置重定向的URL，用视图渲染 404 响应，发送“无内容”响应，等等。一些用例请点击这里。  
 View controllers now have built-in support for redirects and for setting the response status. An application can use this to configure redirect URLs, render 404 responses with a view, send "no content" responses, etc. Some use cases are listed here.
+  * 内置了自定义的路径匹配。参考21.16.11 路径匹配。  
 Path matching customizations are frequently used and now built-in. See Section 16.16.9, “Path Matching”.
+* 支持Groovy标记模板（基于Groovy 2.3）。参考GroovyMarkupConfigurer和各自的ViewResolver及视图实现 。  
 Groovy markup template support (based on Groovy 2.3). See the GroovyMarkupConfigurer and respecitve ViewResolver and ‘View’ implementations.
-4.4 WebSocket STOMP消息改进
+
+## 4.4 WebSocket 消息处理的改进
+4.4 WebSocket Messaging Improvements
+* 支持SockJS（Java）客户端。参考SockJsClient和同包下的类。
 SockJS (Java) client-side support. See SockJsClient and classes in same package.
-New application context events SessionSubscribeEvent and SessionUnubscribeEvent published when STOMP clients subscribe and unsubscribe.
-New "websocket" scope. See Section 20.4.13, “WebSocket Scope”.
+* 当STOMP客户端订阅和取消订阅时新的应用上下文事件SessionSubscribeEvent和SessionUnsubscribeEvent会被触发。
+New application context events SessionSubscribeEvent and SessionUnsubscribeEvent published when STOMP clients subscribe and unsubscribe.
+* 新的作用域“websocket”。参考25.4.14 WebSocket作用域。
+New "websocket" scope. See Section 26.4.16, “WebSocket Scope”.
+* @SendToUser只能把单会话作为目标，而且不需要用户身份验证。
 @SendToUser can target only a single session and does not require an authenticated user.
+* @MessageMapping方法可以使用点“.”代替斜杠“/”作为分割符。参考SPR-11660。
 @MessageMapping methods can use dot "." instead of slash "/" as path separator. See SPR-11660.
-STOMP/WebSocket monitoring info collected and logged. See Section 20.4.15, “Runtime Monitoring”.
+* STOMP/WebSocket监测信息收集和日志管理。参考25.4.16 运行时监测。
+STOMP/WebSocket monitoring info collected and logged. See Section 26.4.18, “Monitoring”.
+* 得到极大优化和改进的日志管理保留了可读性和简洁性，甚至是在DEBUG水平。
 Significantly optimized and improved logging that should remain very readable and compact even at DEBUG level.
+* 优化了消息的创建，包含了对临时消息可变性的支持，并避免自动消息id和时间戳的创建。参考Javadoc中的MessageHeaderAccessor。
 Optimized message creation including support for temporary message mutability and avoiding automatic message id and timestamp creation. See Javadoc of MessageHeaderAccessor.
-STOMP/WebSocket connections that have not activity 60 seconds after the WebSocket session is established. See SPR-11884.
-4.5 测试改进
+* 在WebSocket会话创建60秒后没有活动则将会关闭STOMP/WebSocket连接。参考SPR-11884。
+Close STOMP/WebSocket connections that have no activity within 60 seconds after the WebSocket session is established. See SPR-11884.
+
+## 4.5 测试改进
+4.5 Testing Improvements
+* Groovy脚本现在可用于配置ApplicationContext，其中ApplicationContext在测试上下文框架中被加载用于集成测试。参考带有Groovy脚本的上下文配置。
 Groovy scripts can now be used to configure the ApplicationContext loaded for integration tests in the TestContext framework.
+See the section called “Context configuration with Groovy scripts” for details.
 
-See the section called “使用Groovy脚本配置上下文” for details.
+* 在事务测试方法中可以通过TestTransaction API编程式地开始和结束测试事务。参考编程式事务管理。
 Test-managed transactions can now be programmatically started and ended within transactional test methods via the new TestTransaction API.
-
 See the section called “Programmatic transaction management” for details.
-SQL script execution can now be configured declaratively via the new @Sql and @SqlConfig annotations on a per-class or per-method basis.
 
-See the section called “Executing SQL scripts” for details.
-Test property sources which automatically override system and application property sources can be configured via the new @TestPropertySource annotation.
+* SQL脚本执行可以通过在每个类或方法上添加新的@Sql和@SqlConfig注解声明式地配置。参考14.5.7执行SQL脚本。
+SQL script execution can now be configured declaratively via the new @Sql and @SqlConfig annotations on a per-class or per-method basis.  
+See Section 15.5.8, “Executing SQL scripts” for details.
 
-See the section called “测试属性源上下文配置” for details.
+* 可以通过新的@TestPropertySource注解配置用于测试的property源文件，它能够自动地重写系统和应用的property源文件。参考带有测试property源文件的上下文配置。
+Test property sources which automatically override system and application property sources can be configured via the new @TestPropertySource annotation.  
+See the section called “Context configuration with test property sources” for details.
+* 默认的TestExecutionListeners能够被自动地发现。参考自动发现默认的TestExecutionListeners。
 Default TestExecutionListeners can now be automatically discovered.
 
-See the section called “默认 TestExecutionListeners的自动发现” for details.
+* 自定义的TestExecutionListeners能够被自动地合并到默认的监听器中。参考合并TestExecutionListeners。
+See the section called “Automatic discovery of default TestExecutionListeners” for details.
 Custom TestExecutionListeners can now be automatically merged with the default listeners.
 
-See the section called “合并 TestExecutionListeners” for details.
+See the section called “Merging TestExecutionListeners” for details.
+
+* 测试上下文框架中事务测试的文档提供了更多深入的解释和附加的案例。参考14.5.6 事务管理。
 The documentation for transactional testing support in the TestContext framework has been improved with more thorough explanations and additional examples.
 
-See the section called “Transaction management” for details.
+See Section 15.5.7, “Transaction management” for details.
+
+* 对MockServletContext, MockHttpServletRequest和其它Servlet API模拟的各种各样的改进。
 Various improvements to MockServletContext, MockHttpServletRequest, and other Servlet API mocks.
+* AssertThrows被重构了用于支持Throwable而不是Exception。
 AssertThrows has been refactored to support Throwable instead of Exception.
+
+* 在Spring MVC测试中，JSON Assert作为使用JSONPath的额外选项，可以为JSON响应断言，这就像使用XMLUnit为XML断言一样。
 In Spring MVC Test, JSON responses can be asserted with JSON Assert as an extra option to using JSONPath much like it has been possible to do for XML with XMLUnit.
+
+* 可以通过MockMvcConfigurer创建MockMvcBuilder。这使得应用Spring安全设置变得很容易，也可用于把通用设置压缩进任何第三方框架或项目中。
 MockMvcBuilder recipes can now be created with the help of MockMvcConfigurer. This was added to make it easy to apply Spring Security setup but can be used to encapsulate common setup for any 3rd party framework or within a project.
+
+* MockRestServiceServer现在支持AsyncRestTemplate用于客户端测试。
 MockRestServiceServer now supports the AsyncRestTemplate for client-side testing.

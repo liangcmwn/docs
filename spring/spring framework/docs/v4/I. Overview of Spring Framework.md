@@ -399,13 +399,14 @@ To download a distribution zip open a web browser to http://repo.spring.io/relea
 
 ### 2.3.2 Logging
 2.3.2 日志记录
-日志是非常重要的。因为现在日志框架特别多，所以选择变得很困难。
-
+对于Spring来说日志管理是非常重要的依赖关系，因为a）它是唯一的强制性外部依赖，b）每个人都喜欢从他们使用的工具看到一些输出，c）Spring集成了许多其它工具，它们都选择了日志管理的依赖。应用程序开发者的目标之一通常是在整个应用程序（包括所有的外部组件）的中心位置统一配置日志管理，这是非常困难的因为现在有很多日志管理的框架可供选择。  
 Logging is a very important dependency for Spring because a) it is the only mandatory external dependency, b) everyone likes to see some output from the tools they are using, and c) Spring integrates with lots of other tools all of which have also made a choice of logging dependency. One of the goals of an application developer is often to have unified logging configured in a central place for the whole application, including all external components. This is more difficult than it might have been since there are so many choices of logging framework.
 
-在Spring中强制使用的是Jakarta Commons Logging API (JCL)，在Spring中也显示的使用了JCL。对有所有的模块使用相同的日志框架是非常重要的，Spring是这么做的，让spring-core模块显示的依赖commons-logging，而其他模块则是在编译时依赖。
+Spring中强制的日志管理依赖是Jakarta Commons Logging API（JCL）。我们编译了JCL，并使JCL的Log对象对继承了Spring框架的类可见。对用户来说所有版本的Spring使用相同的日志管理库很重要：迁移很简单因为Spring保存了向后兼容，即使对于扩展了Spring的应用也能向后兼容。我们是怎么做到的呢？我们让Spring的一个模块明确地依赖于commons-logging（JCL的典型实现），然后让所有其它模块都在编译期依赖于这个模块。例如，使用Maven，你想知道哪里依赖了commons-logging，其实是Spring确切地说是其核心模块spring-core依赖了。
 
 The mandatory logging dependency in Spring is the Jakarta Commons Logging API (JCL). We compile against JCL and we also make JCL Log objects visible for classes that extend the Spring Framework. It’s important to users that all versions of Spring use the same logging library: migration is easy because backwards compatibility is preserved even with applications that extend Spring. The way we do this is to make one of the modules in Spring depend explicitly on commons-logging (the canonical implementation of JCL), and then make all the other modules depend on that at compile time. If you are using Maven for example, and wondering where you picked up the dependency on commons-logging, then it is from Spring and specifically from the central module called spring-core.
+
+commons-logging的优点是不需要其它任何东西就可以使应用程序运转起来。它拥有一个运行时发现算法用于在classpath中寻找其它日志管理框架并且适当地选择一个使用（或者告诉它使用哪个）。如果不需要其它的功能了，你就可以从JDK（java.util.logging或JUL）得到一份看起来很漂亮的日志了。你会发现大多数情况下你的Spring应用程序工作得很好且日志很好地输出到了控制台，这很重要。
 
 The nice thing about commons-logging is that you don’t need anything else to make your application work. It has a runtime discovery algorithm that looks for other logging frameworks in well known places on the classpath and uses one that it thinks is appropriate (or you can tell it which one if you need to). If nothing else is available you get pretty nice looking logs just from the JDK (java.util.logging or JUL for short). You should find that your Spring application works and logs happily to the console out of the box in most situations, and that’s important.
 
@@ -481,11 +482,18 @@ Here is an example log4j2.xml for logging to the console:
   </Loggers>
 </Configuration>
 ```
+__不使用Commons Logging__
 Avoiding Commons Logging
+
+不幸的是，commons-logging的运行时发现算法虽然对于终端用户很方便，但存在一定的问题。如果你想避免JCL标准查找，有两种方式关掉commons-logging：
+
 Unfortunately, the runtime discovery algorithm in the standard commons-logging API, while convenient for the end-user, can be problematic. If you’d like to avoid JCL’s standard lookup, there are basically two ways to switch it off:
+
 
 Exclude the dependency from the spring-core module (as it is the only module that explicitly depends on commons-logging)
 Depend on a special commons-logging dependency that replaces the library with an empty jar (more details can be found in the SLF4J FAQ)
+
+在dependencyManagement中添加部分代码就可以排除掉commons-logging了：
 To exclude commons-logging, add the following to your dependencyManagement section:
 
 ```xml
@@ -503,9 +511,13 @@ To exclude commons-logging, add the following to your dependencyManagement secti
     </dependency>
 </dependencies>
 ```
+现在这个应用可能是残缺的，因为在classpath上没有JCL API的实现，所以需要提供一个新的去修复它。下个章节我们将以SLF4J为例子为JCL提供一个替代实现。
+
 Now this application is currently broken because there is no implementation of the JCL API on the classpath, so to fix it a new one has to be provided. In the next section we show you how to provide an alternative implementation of JCL using SLF4J.
 
+__使用SLF4j与Log4j或者Logback__
 #### Using SLF4J with Log4j or Logback
+
 The Simple Logging Facade for Java (SLF4J) is a popular API used by other libraries commonly used with Spring. It is typically used with Logback which is a native implementation of the SLF4J API.
 
 SLF4J provides bindings to many common logging frameworks, including Log4j, and it also does the reverse: bridges between other logging frameworks and itself. So to use SLF4J with Spring you need to replace the commons-logging dependency with the SLF4J-JCL bridge. Once you have done that then logging calls from within Spring will be translated into logging calls to the SLF4J API, so if other libraries in your application use that API, then you have a single place to configure and manage logging.
@@ -543,6 +555,7 @@ A common choice might be to bridge Spring to SLF4J, and then provide explicit bi
 ```
 A more common choice amongst SLF4J users, which uses fewer steps and generates fewer dependencies, is to bind directly to Logback. This removes the extra binding step because Logback implements SLF4J directly, so you only need to depend on just two libraries, namely jcl-over-slf4j and logback):
 
+```xml
 <dependencies>
     <dependency>
         <groupId>org.slf4j</groupId>
@@ -555,6 +568,8 @@ A more common choice amongst SLF4J users, which uses fewer steps and generates f
         <version>1.1.7</version>
     </dependency>
 </dependencies>
+```
+
 #### Using JUL (java.util.logging)
 Commons Logging will delegate to java.util.logging by default, provided that no Log4j is detected on the classpath. So there is no special dependency to set up: just use Spring with no external dependency for log output to java.util.logging, either in a standalone application (with a custom or default JUL setup at the JDK level) or with an application server’s log system (and its system-wide JUL setup).
 
