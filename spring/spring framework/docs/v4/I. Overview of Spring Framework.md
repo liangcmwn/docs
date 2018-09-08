@@ -111,117 +111,173 @@ The spring-expression module provides a powerful Expression Language for queryin
 
 ### 2.2.2 AOP和Instrumentation
 2.2.2 AOP and Instrumentation
-spring-aop模块提供了AOP(联盟编程) 面向切面的编程实现，允许你定义，例如， 将拦截器方法和切入点的代码完全分离开来。 利用源码中的元数据, 你可以将行为信息加入到你的代码中, 一定程度上类似于.NET属性。
-
+* spring-aop模块提供了AOP(联盟编程) 面向切面的编程实现，允许你定义，例如， 将拦截器方法和切入点的代码完全分离开来。 利用源码中的元数据, 你可以将行为信息加入到你的代码中, 一定程度上类似于.NET属性。
 The spring-aop module provides an AOP Alliance-compliant aspect-oriented programming implementation allowing you to define, for example, method interceptors and pointcuts to cleanly decouple code that implements functionality that should be separated. Using source-level metadata functionality, you can also incorporate behavioral information into your code, in a manner similar to that of .NET attributes.
 
-分离的spring-aspects模块集成了AspectJ。
-
+* 分离的spring-aspects模块集成了AspectJ。
 The separate spring-aspects module provides integration with AspectJ.
 
-spring-instrument模块提供了类instrumentation支持和使用在某些应用服务器上的类加载器实现。
-
+* spring-instrument模块提供了类instrumentation支持和使用在某些应用服务器上的类加载器实现。
 The spring-instrument module provides class instrumentation support and classloader implementations to be used in certain application servers. The spring-instrument-tomcat module contains Spring’s instrumentation agent for Tomcat.
 
 ### 2.2.3 Messaging
-Spring 4框架包含了spring-messaging模块，包含了 Spring Integration项目的高度抽象，比如Message, MessageChannel, MessageHandler和其他元素，共同作为基石来服务于一个基于Message的应用。 这个模块同时包含了一系列用来将messages映射到方法的注解，类似于Spring MVC中基于编程的注解。
+Spring 4 包含的spring-messaging模块是从Spring集成项目的关键抽象中提取出来的，这些项目包括Message、MessageChannel、MessageHandler和其它服务于消息处理的项目。这个模块也包含一系列的注解用于映射消息到方法，这类似于Spring MVC基于编码模型的注解。
 
-### 2.2.3 Messaging
 Spring Framework 4 includes a spring-messaging module with key abstractions from the Spring Integration project such as Message, MessageChannel, MessageHandler, and others to serve as a foundation for messaging-based applications. The module also includes a set of annotations for mapping messages to methods, similar to the Spring MVC annotation based programming model.
 
+2.2.4 数据访问与集成
 ### 2.2.4 Data Access/Integration
+数据访问与集成层包含JDBC、ORM、OXM、JMS和事务模块。 
+（译者注：JDBC=Java Data Base Connectivity，ORM=Object Relational Mapping，OXM=Object XML Mapping，JMS=Java Message Service）
 The Data Access/Integration layer consists of the JDBC, ORM, OXM, JMS, and Transaction modules.
 
+* spring-jdbc模块提供了JDBC抽象层，它消除了冗长的JDBC编码和对数据库供应商特定错误代码的解析。 
 The spring-jdbc module provides a JDBC-abstraction layer that removes the need to do tedious JDBC coding and parsing of database-vendor specific error codes.
-
+* spring-tx模块支持编程式事务和声明式事务，可用于实现了特定接口的类和所有的POJO对象。 
+（译者注：编程式事务需要自己写beginTransaction()、commit()、rollback()等事务管理方法，声明式事务是通过注解或配置由spring自动处理，编程式事务粒度更细）
 The spring-tx module supports programmatic and declarative transaction management for classes that implement special interfaces and for all your POJOs (Plain Old Java Objects).
-
+* spring-orm模块提供了对流行的对象关系映射API的集成，包括JPA、JDO和Hibernate等。通过此模块可以让这些ORM框架和spring的其它功能整合，比如前面提及的事务管理。
 The spring-orm module provides integration layers for popular object-relational mapping APIs, including JPA, JDO, and Hibernate. Using the spring-orm module you can use all of these O/R-mapping frameworks in combination with all of the other features Spring offers, such as the simple declarative transaction management feature mentioned previously.
-
+* spring-oxm模块提供了对OXM实现的支持，比如JAXB、Castor、XML Beans、JiBX、XStream等。
 The spring-oxm module provides an abstraction layer that supports Object/XML mapping implementations such as JAXB, Castor, XMLBeans, JiBX and XStream.
-
+* spring-jms模块（Java消息服务）包含生成和消费消息的功能。从Spring 4.1开始，集成了spring-messaging模块。  
 The spring-jms module (Java Messaging Service) contains features for producing and consuming messages. Since Spring Framework 4.1, it provides integration with the spring-messaging module.
 
 ### 2.2.5 Web
+Web层包括spring-web、spring-webmvc、spring-websocket、spring-webmvc-portlet等模块。
 The Web layer consists of the spring-web, spring-webmvc, spring-websocket, and spring-webmvc-portlet modules.
 
+spring-web模块提供面向web的基本功能和面向web的应用上下文，比如多部分（multipart）文件上传功能、使用Servlet监听器初始化IoC容器等。它还包括HTTP客户端以及Spring远程调用中与web相关的部分。 
 The spring-web module provides basic web-oriented integration features such as multipart file upload functionality and the initialization of the IoC container using Servlet listeners and a web-oriented application context. It also contains an HTTP client and the web-related parts of Spring’s remoting support.
+
+spring-webmvc模块（即Web-Servlet模块）为web应用提供了模型视图控制（MVC）和REST Web服务的实现。Spring的MVC框架可以使领域模型代码和web表单完全地分离，且可以与Spring框架的其它所有功能进行集成。
 
 The spring-webmvc module (also known as the Web-Servlet module) contains Spring’s model-view-controller (MVC) and REST Web Services implementation for web applications. Spring’s MVC framework provides a clean separation between domain model code and web forms and integrates with all of the other features of the Spring Framework.
 
+spring-webmvc-portlet模块（即Web-Portlet模块）提供了用于Portlet环境的MVC实现，并反映了spring-webmvc模块的功能。
 The spring-webmvc-portlet module (also known as the Web-Portlet module) provides the MVC implementation to be used in a Portlet environment and mirrors the functionality of the Servlet-based spring-webmvc module.
 
 ### 2.2.6 Test
+spring-test模块通过JUnit或者TestNG来对Spring的模块进行单元测试和集成测试。它提供一致的Spring 的ApplicationContexts 和context的缓存。它还提供mock对象让你测试你的代码。  
 The spring-test module supports the unit testing and integration testing of Spring components with JUnit or TestNG. It provides consistent loading of Spring ApplicationContexts and caching of those contexts. It also provides mock objects that you can use to test your code in isolation.
 
+## 2.3 使用场景
 ## 2.3 Usage scenarios
+
+前面提及的构建模块使得Spring在很多场景成为一种合理的选择，不管是资源受限的嵌入式应用还是使用了事务管理和web集成框架的成熟的企业级应用。
 The building blocks described previously make Spring a logical choice in many scenarios, from embedded applications that run on resource-constrained devices to full-fledged enterprise applications that use Spring’s transaction management functionality and web framework integration.
 
+
+图2.2. 典型的成熟的Spring web应用程序 
 Figure 2.2. Typical full-fledged Spring web application
 ![](https://docs.spring.io/spring/docs/4.3.20.BUILD-SNAPSHOT/spring-framework-reference/htmlsingle/images/overview-full.png)
 overview full
 
+Spring的声明式事务管理可以使web应用完成事务化，就像使用EJB容器管理的事务。所有客制的业务逻辑都可以使用简单的POJO实现，并用Spring的IoC容器进行管理。另外，还包括发邮件和验证功能，其中验证功能是从web层分离的，由你决定何处执行验证。Spring的ORM可以集成JPA、Hibernate和JDO等，比如，使用Hibernate时，可以继续使用已存在的映射文件和标准的Hibernate的SessionFactory配置。表单控制器无缝地把web层和领域模型集成在一起，移除了ActionForms和其它把HTTP参数转换成领域模型的类。
 Spring’s declarative transaction management features make the web application fully transactional, just as it would be if you used EJB container-managed transactions. All your custom business logic can be implemented with simple POJOs and managed by Spring’s IoC container. Additional services include support for sending email and validation that is independent of the web layer, which lets you choose where to execute validation rules. Spring’s ORM support is integrated with JPA, Hibernate and JDO; for example, when using Hibernate, you can continue to use your existing mapping files and standard Hibernate SessionFactory configuration. Form controllers seamlessly integrate the web-layer with the domain model, removing the need for ActionForms or other classes that transform HTTP parameters to values for your domain model.
 
+图2.3. 使用第三方web框架的Spring中间件 
 Figure 2.3. Spring middle-tier using a third-party web framework
 ![](https://docs.spring.io/spring/docs/4.3.20.BUILD-SNAPSHOT/spring-framework-reference/htmlsingle/images/overview-thirdparty-web.png)
 overview thirdparty web
 
+一些场景可能不允许你完全切换到另一个框架。然而，Spring框架不强制你使用它所有的东西，它不是非此即彼（all-or-nothing）的解决方案。前端使用Struts、Tapestry、JSF或别的UI框架可以和Spring中间件集成，从而使用Spring的事务管理功能。仅仅只需要使用ApplicationContext连接业务逻辑，并使用WebApplicationContext集成web层即可。
 Sometimes circumstances do not allow you to completely switch to a different framework. The Spring Framework does not force you to use everything within it; it is not an all-or-nothing solution. Existing front-ends built with Struts, Tapestry, JSF or other UI frameworks can be integrated with a Spring-based middle-tier, which allows you to use Spring transaction features. You simply need to wire up your business logic using an ApplicationContext and use a WebApplicationContext to integrate your web layer.
 
+图2.4. 远程调用使用场景 
 Figure 2.4. Remoting usage scenario
 ![](https://docs.spring.io/spring/docs/4.3.20.BUILD-SNAPSHOT/spring-framework-reference/htmlsingle/images/overview-remoting.png)
 overview remoting
 
+当需要通过web服务访问现有代码时，可以使用Spring的Hessian-，Burlap-，Rmi-或者JaxRpcProxyFactory类，远程访问现有的应用并非难事。
+
 When you need to access existing code through web services, you can use Spring’s Hessian-, Burlap-, Rmi- or JaxRpcProxyFactory classes. Enabling remote access to existing applications is not difficult.
 
+图2.5. EJB-包装现有的POJO 
 Figure 2.5. EJBs - Wrapping existing POJOs
 ![](https://docs.spring.io/spring/docs/4.3.20.BUILD-SNAPSHOT/spring-framework-reference/htmlsingle/images/overview-ejb.png)
 overview ejb
 
+Spring框架也为EJB提供了访问抽象层，可以重新使用现有的POJO并把它们包装到无状态的会话bean中，以使其用于可扩展的安全的web应用中。
 The Spring Framework also provides an access and abstraction layer for Enterprise JavaBeans, enabling you to reuse your existing POJOs and wrap them in stateless session beans for use in scalable, fail-safe web applications that might need declarative security.
 
+### 2.3.1 依赖管理和命名约定
 ### 2.3.1 Dependency Management and Naming Conventions
+依赖管理和依赖注入是两码事。为了让应用程序拥有这些Spring的非常棒的功能（如依赖注入），需要导入所需的全部jar包，并在运行时放在classpath下，有可能的话编译期也应该放在classpath下。这些依赖并不是被注入的虚拟组件，而是文件系统上典型的物理资源。依赖管理的处理过程涉及到定位这些资源、存储并添加它们到classpath下。依赖可能是直接的（比如运行时依赖于Spring），也可能是间接的（比如依赖于commons-dbcp，commons-dbcp又依赖于commons-pool）。间接的依赖又被称作“传递”，它们是最难识别和管理的。
+
 Dependency management and dependency injection are different things. To get those nice features of Spring into your application (like dependency injection) you need to assemble all the libraries needed (jar files) and get them onto your classpath at runtime, and possibly at compile time. These dependencies are not virtual components that are injected, but physical resources in a file system (typically). The process of dependency management involves locating those resources, storing them and adding them to classpaths. Dependencies can be direct (e.g. my application depends on Spring at runtime), or indirect (e.g. my application depends on commons-dbcp which depends on commons-pool). The indirect dependencies are also known as "transitive" and it is those dependencies that are hardest to identify and manage.
+
+如果准备使用Spring，则需要拷贝一份所需模块的Spring的jar包。为了便于使用，Spring被打包成一系列的模块以尽可能地减少依赖，比如，如果不是在写一个web应用，那就没必要引入spring-web模块。这篇文档中涉及到的Spring模块，我们使用spring-*或spring-*.jar的命名约定，其中，*代表模块的短名字（比如，spring-core、spring-webmvc、spring-jms等等）。实际使用的jar包正常情况下都是带有版本号的（比如，spring-core-4.3.0.RELEASE.jar）。
 
 If you are going to use Spring you need to get a copy of the jar libraries that comprise the pieces of Spring that you need. To make this easier Spring is packaged as a set of modules that separate the dependencies as much as possible, so for example if you don’t want to write a web application you don’t need the spring-web modules. To refer to Spring library modules in this guide we use a shorthand naming convention spring-* or spring-*.jar, where * represents the short name for the module (e.g. spring-core, spring-webmvc, spring-jms, etc.). The actual jar file name that you use is normally the module name concatenated with the version number (e.g. spring-core-4.3.20.BUILD-SNAPSHOT.jar).
 
+每个版本的Spring都会在以下地方发布artifact：
 Each release of the Spring Framework will publish artifacts to the following places:
-
+ * Maven中央仓库，默认的Maven查询仓库，并且不需要特殊的配置就可以使用。许多Spring依赖的公共库也可以从Maven中央仓库获得，并且大部分的Spring社区也使用Maven作为依赖管理工具，所以很方便。Maven中的jar包命名格式为spring-*-<version>.jar，其groupId是org.springframework。
 Maven Central, which is the default repository that Maven queries, and does not require any special configuration to use. Many of the common libraries that Spring depends on also are available from Maven Central and a large section of the Spring community uses Maven for dependency management, so this is convenient for them. The names of the jars here are in the form spring-*-<version>.jar and the Maven groupId is org.springframework.
+* 特别为托管Spring的公共的Maven仓库。除了最终的GA版本，这个仓库也托管了开发的快照版本和里程碑版本。jar包和Maven中央仓库中的命名一致，所以这也是一个获取Spring的开发版本的有用地方，可以和Maven中央仓库中部署的其它库一起使用。这个仓库也包含了捆绑了所有Spring jar包的发行版的zip文件，以便于下载。
 In a public Maven repository hosted specifically for Spring. In addition to the final GA releases, this repository also hosts development snapshots and milestones. The jar file names are in the same form as Maven Central, so this is a useful place to get development versions of Spring to use with other libraries deployed in Maven Central. This repository also contains a bundle distribution zip file that contains all Spring jars bundled together for easy download.
+
+因此，首先要做的事就是决定如何管理依赖关系，我们一般推荐使用自动管理的系统，比如Maven、Gradle或Ivy，当然你也可以手动下载所有的jar包。
 So the first thing you need to decide is how to manage your dependencies: we generally recommend the use of an automated system like Maven, Gradle or Ivy, but you can also do it manually by downloading all the jars yourself.
 
+下面列出了Spring的artifact，每个模块更完整的描述，参考 2.2 模块 章节。
 Below you will find the list of Spring artifacts. For a more complete description of each module, see Section 2.2, “Framework Modules”.
 
-Table 2.1. Spring Framework Artifacts
+表2.1. Spring框架的artifact
+#### Table 2.1. Spring Framework Artifacts
 
 GroupId | ArtifactId | Description
 ------------ | ------------- | ------
 org.springframework | spring-aop | Proxy-based AOP support
+-| | 基于代理的AOP支持
 org.springframework |spring-aspects|AspectJ based aspects
+-| | 基于AspectJ 的切面编程
 org.springframework |spring-beans |Beans support, including Groovy
+-| | Beans的支持, 包括 Groovy
 org.springframework |spring-context |Application context runtime, including scheduling and remoting abstractions
+-| | 应用程序运行时上下文,包括调度和远程抽象
 org.springframework |spring-context-support |Support classes for integrating common third-party libraries into a Spring application context
+-| | 提供第三方库到Spring的支持
 org.springframework |spring-core|Core utilities, used by many other Spring modules
+-| | 核心工具类，被其他模块使用
 org.springframework |spring-expression|Spring Expression Language (SpEL)
+-| | Spring 表达式语言 (SpEL)
 org.springframework |spring-instrument|Instrumentation agent for JVM bootstrapping
+-| | 	代理JVM相关的
 org.springframework |spring-instrument-tomcat |Instrumentation agent for Tomcat
+-| | Tomcat的插件
 org.springframework |spring-jdbc|JDBC support package, including DataSource setup and JDBC access support
+-| | 提供jdbc的支持，包括数据源和JDBC访问
 org.springframework |spring-jms|JMS support package, including helper classes to send/receive JMS messages
+-| | JMS支持包，包括接收和发送消息类的支持
 org.springframework |spring-messaging|Support for messaging architectures and protocols
+-| | 对消息传递体系结构和协议的支持
 org.springframework |spring-orm|Object/Relational Mapping, including JPA and Hibernate support
+-| | 对象/关系  映射, 拨快对JPA 和 Hibernate的支持
 org.springframework |spring-oxm |Object/XML Mapping
+-| | 对象/XML 映射的支持
 org.springframework |spring-test |Support for unit testing and integration testing Spring components
+-| | 对Spring组件单元测试和集成测试的支持
 org.springframework |spring-tx |Transaction infrastructure, including DAO support and JCA integration
+-| | 事物支持，包块DAO支持和JCA集成
 org.springframework |spring-web |Foundational web support, including web client and web-based remoting
+-| | Web 支持，包括客户端和Web访问
 org.springframework |spring-webmvc |HTTP-based Model-View-Controller and REST endpoints for Servlet stacks
+-| | 一个MVC框架
 org.springframework |spring-webmvc-portlet |MVC implementation to be used in a Portlet environment
+-| | 用于Portlet环境的MVC实现
 org.springframework |spring-websocket |WebSocket and SockJS infrastructure, including STOMP messaging support
+-| | WebSocket 和SockJS 的实现，包括对STOMP的支持
 
 #### Spring Dependencies and Depending on Spring  
+Spring的依赖和被依赖
+
+Spring对大部分企业和其它外部工具提供了集成和支持，把强制性的外部依赖降到了最低，这样就不需要为了简单地使用Spring而去寻找和下载大量的jar包了。基本的依赖注入只有一个强制性的外部依赖，那就是日志管理（参考下面关于日志管理选项的详细描述）。
 
 Although Spring provides integration and support for a huge range of enterprise and other external tools, it intentionally keeps its mandatory dependencies to an absolute minimum: you shouldn’t have to locate and download (even automatically) a large number of jar libraries in order to use Spring for simple use cases. For basic dependency injection there is only one mandatory external dependency, and that is for logging (see below for a more detailed description of logging options).
+
+下面列出依赖于Spring的应用的基本配置步骤，首先使用Maven，然后Gradle，最后Ivy。在所有案例中，如果有什么不清楚的地方，参考所用的依赖管理系统的文档或查看一些范例代码——Spring构建时本身使用Gradle管理依赖，所以我们的范例大部分使用Gradle或Maven。
 
 Next we outline the basic steps needed to configure an application that depends on Spring, first with Maven and then with Gradle and finally using Ivy. In all cases, if anything is unclear, refer to the documentation of your dependency management system, or look at some sample code - Spring itself uses Gradle to manage dependencies when it is building, and our samples mostly use Gradle or Maven.
 
@@ -342,7 +398,12 @@ Distribution zips are published to the Spring Maven Repository (this is just for
 To download a distribution zip open a web browser to http://repo.spring.io/release/org/springframework/spring and select the appropriate subfolder for the version that you want. Distribution files end -dist.zip, for example spring-framework-{spring-version}-RELEASE-dist.zip. Distributions are also published for milestones and snapshots.
 
 ### 2.3.2 Logging
+2.3.2 日志记录
+日志是非常重要的。因为现在日志框架特别多，所以选择变得很困难。
+
 Logging is a very important dependency for Spring because a) it is the only mandatory external dependency, b) everyone likes to see some output from the tools they are using, and c) Spring integrates with lots of other tools all of which have also made a choice of logging dependency. One of the goals of an application developer is often to have unified logging configured in a central place for the whole application, including all external components. This is more difficult than it might have been since there are so many choices of logging framework.
+
+在Spring中强制使用的是Jakarta Commons Logging API (JCL)，在Spring中也显示的使用了JCL。对有所有的模块使用相同的日志框架是非常重要的，Spring是这么做的，让spring-core模块显示的依赖commons-logging，而其他模块则是在编译时依赖。
 
 The mandatory logging dependency in Spring is the Jakarta Commons Logging API (JCL). We compile against JCL and we also make JCL Log objects visible for classes that extend the Spring Framework. It’s important to users that all versions of Spring use the same logging library: migration is easy because backwards compatibility is preserved even with applications that extend Spring. The way we do this is to make one of the modules in Spring depend explicitly on commons-logging (the canonical implementation of JCL), and then make all the other modules depend on that at compile time. If you are using Maven for example, and wondering where you picked up the dependency on commons-logging, then it is from Spring and specifically from the central module called spring-core.
 
@@ -505,3 +566,6 @@ In a "parent first" ClassLoader delegation model (the default on WAS), applicati
 With a "parent last" delegation model (the default in a regular Servlet container but an explicit configuration option on WAS), an application-provided Commons Logging variant will be picked up, enabling you to set up a locally included log provider, e.g. Log4j or Logback, within your application. In case of no local log provider, regular Commons Logging will delegate to JUL by default, effectively logging to WebSphere’s logging subsystem like in the "parent first" scenario.
 
 All in all, we recommend deploying Spring applications in the "parent last" model since it naturally allows for local providers as well as the server’s log subsystem.
+
+## 参考：
+https://blog.csdn.net/tangtong1/article/details/51326887
