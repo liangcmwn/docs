@@ -22,7 +22,7 @@ HostListener
 
 `HostListenerDecorator` 装饰器定义
 ==
-```
+```typescript
 export interface HostListenerDecorator {
     (eventName: string, args?: string[]): any;
     new (eventName: string, args?: string[]): any;
