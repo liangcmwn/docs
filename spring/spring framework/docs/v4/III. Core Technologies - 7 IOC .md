@@ -3640,6 +3640,7 @@ Most examples in this chapter use XML to specify the configuration metadata that
 
 ### 7.10.1 @Component及其扩展注解
 7.10.1 @Component and further stereotype annotations
+
 @Repository注解是一种用于标识存储类（也被称为数据访问对象或者DAO）的标记。异常的自动翻译是这个标记的用法之一，参考20.2.2 异常翻译。
 
 The @Repository annotation is a marker for any class that fulfills the role or stereotype of a repository (also known as Data Access Object or DAO). Among the uses of this marker is the automatic translation of exceptions as described in Section 20.2.2, “Exception translation”.
@@ -3648,7 +3649,7 @@ Spring提供了一些扩展注解：@Component， @Service和@Controller。@Comp
 
 Spring provides further stereotype annotations: @Component, @Service, and @Controller. @Component is a generic stereotype for any Spring-managed component. @Repository, @Service, and @Controller are specializations of @Component for more specific use cases, for example, in the persistence, service, and presentation layers, respectively. Therefore, you can annotate your component classes with @Component, but by annotating them with @Repository, @Service, or @Controller instead, your classes are more properly suited for processing by tools or associating with aspects. For example, these stereotype annotations make ideal targets for pointcuts. It is also possible that @Repository, @Service, and @Controller may carry additional semantics in future releases of the Spring Framework. Thus, if you are choosing between using @Component or @Service for your service layer, @Service is clearly the better choice. Similarly, as stated above, @Repository is already supported as a marker for automatic exception translation in your persistence layer.
 
-7.10.2 元注解
+### 7.10.2 元注解
 7.10.2 Meta-annotations
 
 Spring提供了很多注解可用于元注解。元注解即一种可用于别的注解之上的注解。例如，@Service就是一种被元注解@Component注解的注解：
@@ -3765,10 +3766,12 @@ The following is an alternative using XML
 ```
 [Tip]
 > 使用<context:component-scan>隐式地允许<context:annotation-config>的功能。因此，使用<context:component-scan>时一般就不需要再包含<context:annotation-config>元素了。
+
 > The use of <context:component-scan> implicitly enables the functionality of <context:annotation-config>. There is usually no need to include the <context:annotation-config> element when using <context:component-scan>.
 
 [Note]
 > 类路径扫描的包必须保证这些包出现在classpath中。当使用Ant构建JAR包时，请确定不要激活仅仅使用文件的开关。同样地，类路径目录可能在某些环境下基于安全考虑不允许暴露，基于JDK 1.7.0_45及更高版本的app（需要在清单中设置信任库，参考http://stackoverflow.com/questions/19394570/java-jre-7u45-breaks-classloader-getresources）。
+
 > The scanning of classpath packages requires the presence of corresponding directory entries in the classpath. When you build JARs with Ant, make sure that you do not activate the files-only switch of the JAR task. Also, classpath directories may not get exposed based on security policies in some environments, e.g. standalone apps on JDK 1.7.0_45 and higher (which requires 'Trusted-Library' setup in your manifests; see http://stackoverflow.com/questions/19394570/java-jre-7u45-breaks-classloader-getresources).
 
 另外，使用component-scan元素时默认也启用了AutowiredAnnotationBeanPostProcessor和CommonAnnotationBeanPostProcessor。这意味着这两个组件被自动检测到了且不需要在XML中配置任何元数据。
@@ -3777,6 +3780,7 @@ Furthermore, the AutowiredAnnotationBeanPostProcessor and CommonAnnotationBeanPo
 
 [Note]
 > 可以使用annotation-config元素并设置其属性为false来禁用AutowiredAnnotationBeanPostProcessor和CommonAnnotationBeanPostProcessor。
+
 > You can disable the registration of AutowiredAnnotationBeanPostProcessor and CommonAnnotationBeanPostProcessor by including the annotation-config attribute with a value of false.
 
 ### 7.10.4 使用过滤器自定义扫描
@@ -3823,10 +3827,12 @@ and the equivalent using XML
 ```
 [Note]
 > 也可以设置这个注解的useDefaultFilters=false或为<component-scan/>元素提供属性use-default-filters=”false”忽略掉默认的过滤器。这将不会自动检测带有@Component, @Repository, @Service, @Controller或@Configuration注解的类。
+
 > You can also disable the default filters by setting useDefaultFilters=false on the annotation or providing use-default-filters="false" as an attribute of the <component-scan/> element. This will in effect disable automatic detection of classes annotated with @Component, @Repository, @Service, @Controller, or @Configuration.
 
 ### 7.10.5 在组件内部定义bean元数据
 7.10.5 Defining bean metadata within components
+
 Spring的组件也可以为容器贡献bean的定义元数据，只要在@Component注解的类内部使用@Bean注解即可。下面是一个简单的例子：
 
 Spring components can also contribute bean definition metadata to the container. You do this with the same @Bean annotation used to define bean metadata within @Configuration annotated classes. Here is a simple example:
@@ -3851,6 +3857,7 @@ This class is a Spring component that has application-specific code contained in
 
 [Tip]
 > 除了扮演组件初始化的角色，@Lazy注解还可以放置在被@Autowired或@Inject标记的注入点。在这种情况下，它会使得注入使用延迟代理。
+
 > In addition to its role for component initialization, the @Lazy annotation may also be placed on injection points marked with @Autowired or @Inject. In this context, it leads to the injection of a lazy-resolution proxy.
 
 自动装配的字段和方法也可以像前面讨论的一样被支持，也可以支持@Bean方法的自动装配：
@@ -4203,7 +4210,7 @@ public class AppConfig  {
 > 与@Component不同的是，JSR-330的@Named注解不能组合成其它的注解，因此，如果需要构建自定义的注解，请使用Spring的注解。
 > In contrast to @Component, the JSR-330 @Named and the JSR-250 ManagedBean annotations are not composable. Please use Spring’s stereotype model for building custom component annotations.
 
-7.11.3 JSR-330标准注解的局限性
+### 7.11.3 JSR-330标准注解的局限性
 7.11.3 Limitations of JSR-330 standard annotations
 
 使用标准注解时，应该要了解以下不支持的特性：
@@ -4211,10 +4218,11 @@ public class AppConfig  {
 When working with standard annotations, it is important to know that some significant features are not available as shown in the table below:
 
 __表 7.6. Spring组件模型与JSR-330变种的对比__
+
 Table 7.6. Spring component model elements vs. JSR-330 variants
 
 Spring|	javax.inject.*	|javax.inject restrictions / comments
--- | -- | -- | --
+-- | -- | --
 @Autowired| @Inject|@Inject has no 'required' attribute; can be used with Java 8’s Optional instead. @Inject没有require属性，可以使用Java 8的Optional代替。
 @Component|@Named / @ManagedBean|JSR-330 does not provide a composable model, just a way to identify named components. JSR-330没有提供组合模型，仅仅只是一种标识组件的方式
 @Scope("singleton")|@Singleton|The JSR-330 default scope is like Spring’s prototype. However, in order to keep it consistent with Spring’s general defaults, a JSR-330 bean declared in the Spring container is a singleton by default. In order to use a scope other than singleton, you should use Spring’s @Scope annotation. javax.inject also provides a @Scope annotation. Nevertheless, this one is only intended to be used for creating your own annotations. JSR-330默认的作用域类似于Spring的prototype。然而，为了与Spring一般的配置的默认值保持一致，JSR-330配置的bean在Spring中默认为singleton。为了使用singleton以外的作用域，必须使用Spring的@Scope注解。javax.inject也提供了一个@Scope注解，不过这仅仅被用于创建自己的注解。
@@ -4224,7 +4232,7 @@ Spring|	javax.inject.*	|javax.inject restrictions / comments
 @Lazy|-|no equivalent
 ObjectFactory|Provider|javax.inject.Provider is a direct alternative to Spring’s ObjectFactory, just with a shorter get() method name. It can also be used in combination with Spring’s @Autowired or with non-annotated constructors and setter methods. javax.inject.Provider是对Spring的ObjectFactory的直接替代，仅仅使用简短的get()方法即可。它也可以与Spring的@Autowired或无注解的构造方法和setter方法一起使用。
 
-##7.12 基于Java的容器配置
+## 7.12 基于Java的容器配置
 7.12 Java-based container configuration
 
 ### 7.12.1 基本概念：@Bean和@Configuration
@@ -4259,7 +4267,7 @@ The AppConfig class above would be equivalent to the following Spring <beans/> X
     <bean id="myService" class="com.acme.services.MyServiceImpl"/>
 </beans>
 ```
-全量的@Configuration和简化的@Bean模式？
+全量的@Configuration和简化的@Bean模式？  
 Full @Configuration vs 'lite' @Bean mode?
 
 > 当@Bean方法不定义在@Configuration的类中时，它们会被一种简化的模式处理。例如，定义在@Component类或普通类中的@Bean方法。
@@ -4294,6 +4302,7 @@ When @Configuration classes are provided as input, the @Configuration class itse
 When @Component and JSR-330 classes are provided, they are registered as bean definitions, and it is assumed that DI metadata such as @Autowired or @Inject are used within those classes where necessary.
 
 __简单的构造方法__
+
 Simple construction
 
 与使用ClassPathXmlApplicationContext注入XML文件一样，可以使用AnnotationConfigApplicationContext注入@Configuration类。这样就完全不用在Spring容器中使用XML了：
@@ -4345,9 +4354,9 @@ public class AppConfig  {
 }
 ```
 [Tip]
-有经验的用户可能更熟悉使用等价的XML形式配置： 
+> 有经验的用户可能更熟悉使用等价的XML形式配置： 
 
-Experienced Spring users will be familiar with the XML declaration equivalent from Spring’s context: namespace
+> Experienced Spring users will be familiar with the XML declaration equivalent from Spring’s context: namespace
 ```xml
 <beans>
     <context:component-scan base-package="com.acme"/>
