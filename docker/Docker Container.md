@@ -2,7 +2,7 @@
 
 Docker container是image的实例，共享内核
 
-Docker  container里可以运行不同os的image，比如Ubuntu的或者centos
+Docker container里可以运行不同os的image，比如Ubuntu的或者centos
 
 Docker container不建议内部开启一个sshd服务，1.3版本后新增了docker exec命令进入容器进行排查问题
 
